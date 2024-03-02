@@ -1,24 +1,10 @@
 """Module defining the event loop and valid events."""
 from champion import BaseChampion
 
-
-class EventLoop():
-    """Event loop."""
-
-    def __init__(self) -> None:
-        """Init."""
-        self._nodes = []
-        self._current_time = 0
-
-    def get_status(self, timestamp: int):
-        """Calculate status of all nodes involved at a specific point in time."""
-
-    def run(self):
-        """Run through the entire event loop."""
-
-    def next(self):
-        """Handle next event."""
-
+# Dictionary of commands as keys and a prettier, human readable format as values
+PRINTABLE = {
+    "_auto_attack_hit": "Auto attack"
+}
 
 class EQSingleton():
     """Event queue, following the singleton pattern as to only allow a single instance."""
@@ -28,28 +14,48 @@ class EQSingleton():
 
         def __init__(self) -> None:
             """Init."""
-            self._champions = []  # All champions included in the simulation
+            self.champions = []  # All champions included in the simulation
             self._events = []
 
         def _sort(self):
             """Sort the event queue based on each events timestamp."""
-            raise NotImplementedError
-
-        def run(self):
-            """Run through the entire event loop."""
-            raise NotImplementedError
+            self._events.sort(key=lambda x: x[1])
 
         def add_champion(self, champion: BaseChampion) -> None:
             """Add a champion to the event queue."""
             # Make sure the champion isn't already added.
-            existing_champions = [str(champ) for champ in self._champions]
+            existing_champions = [str(champ) for champ in self.champions]
             if str(champion) in existing_champions:
                 return
-            self._champions.append(champion)
+            self.champions.append(champion)
+
+        def add_event(self, event: dict, timestamp: int):
+            """Add an event to the queue."""
+            self._events.append((event, timestamp))
+            self._sort()
+
+        def get_last_timestamp(self, champion: str | None = None):
+            """Get the last timestamp for a champion."""
+            champ_timestamps = [ev[1] for ev in self._events if ev[0]["source"] == champion]
+            if not champ_timestamps:
+                return 0
+            return champ_timestamps[-1]
+
+        def print_queue(self) -> None:
+            """Print all events in a pretty format."""
+            print("\n========== Event Queue ==========")
+            for event in self._events:
+                command, timestamp = event
+                event_str = f"{timestamp:6.3f} | "
+                event_str += f"{PRINTABLE[command['effect']]:12s} | "
+                event_str += f"{command['source']:>10s} --> "
+                event_str += f"{command['target']:<10s}"
+                print(event_str)
+            print("\n")
 
         def reset_all(self) -> None:
             """Clear the entire event queue and all participating champions."""
-            self._champions = []
+            self.champions = []
             self._events = []
 
         def reset_queue(self) -> None:
