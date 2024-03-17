@@ -62,6 +62,7 @@ class BaseChampion():
     def _auto_attack_hit(self, damage: float) -> None:
         """Take damage from an auto attack."""
         self.current_hitpoints -= damage * self._physical_damage_reduction()
+        print(f"{self} takes {damage:.0f} damage. New hitpoints: {self.current_hitpoints:.0f}")
 
     def is_alive(self) -> bool:
         """Check whether the champion is alive i.e. hitpoints is above (or equal) to zero."""
@@ -76,14 +77,14 @@ class KogMaw(BaseChampion):
         super().__init__()
 
         # Set the champions base stats
-        # TODO: Instead of hard coding them here, load bin file from cdragon.
+        # TODO: Instead of hardcoding them here, load bin file from cdragon.
         self.ability_power = 0
         self.attack_damage = 61
         self.magic_resist = 30
         self.attack_speed = 0.665
         self.armor = 24
         self.hitpoints = 635
-
+        self.current_hitpoints = self.hitpoints
 
     def __str__(self) -> str:
         """String representation of champion."""
@@ -106,7 +107,7 @@ class Sivir(BaseChampion):
         self.magic_resist = 30
         self.armor = 26
         self.hitpoints = 600
-
+        self.current_hitpoints = self.hitpoints
 
     def __str__(self) -> str:
         """String representation of champion."""

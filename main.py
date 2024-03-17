@@ -7,13 +7,13 @@ from event import EventQueue
 
 def run_auto_attack_simulation():
     """Run a simulation of autoattacks until one person loses."""
-    for _ in range(5):
+    for _ in range(15):
         for champ in EventQueue.champions:
             event, delay = champ.get_next_attack()
             last_timestamp = EventQueue.get_last_timestamp(str(champ))
             EventQueue.add_event(event, last_timestamp + delay)
     EventQueue.print_queue()
-
+    EventQueue.run()
 
 
 def main():
@@ -31,6 +31,7 @@ def main():
     EventQueue.add_champion(kog)
 
     run_auto_attack_simulation()
+
 
 if __name__ == "__main__":
     main()
