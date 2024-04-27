@@ -1,5 +1,7 @@
 """Define the different champions in the game and their stats."""
 
+from bin import load_base_stats
+
 
 class BaseChampion():
     """Base class of a champion."""
@@ -24,6 +26,25 @@ class BaseChampion():
         # Misc
         self._target = None  # Default target for auto attacks
         self._aa_cooldown = 0  # Seconds until the champion can auto attack again.
+
+        # Load base stats available from cdragon.
+        # TODO: Currently these are not used. I think the currently used attributes for stats
+        # e.g. attack_damage should stay (or be grouped into a live_stats dict) since its affected
+        # by items, levels, etc.
+        self._base_stats = self._load()
+
+    def __str__(self) -> str:
+        """Pretty string representation of champion, typically for printing."""
+        raise NotImplementedError("This should be defined in child class.")
+
+    @staticmethod
+    def data_str() -> str:
+        """Data string representation of champion, typically in file names or accessing data."""
+        raise NotImplementedError("This should be defined in child class.")
+
+    def _load(self):
+        """Load base stats for the champion."""
+        return load_base_stats(self.data_str())
 
     def set_target(self, target: str):
         """Select a champion to autoattack."""
@@ -87,8 +108,13 @@ class KogMaw(BaseChampion):
         self.current_hitpoints = self.hitpoints
 
     def __str__(self) -> str:
-        """String representation of champion."""
+        """Pretty string representation of champion."""
         return "Kog'Maw"
+
+    @staticmethod
+    def data_str() -> str:
+        """Data string representation of champion, typically in file names or accessing data."""
+        return "kogmaw"
 
 
 class Sivir(BaseChampion):
@@ -110,5 +136,10 @@ class Sivir(BaseChampion):
         self.current_hitpoints = self.hitpoints
 
     def __str__(self) -> str:
-        """String representation of champion."""
+        """Pretty string representation of champion."""
         return "Sivir"
+
+    @staticmethod
+    def data_str() -> str:
+        """Data string representation of champion, typically in file names or accessing data."""
+        return "sivir"

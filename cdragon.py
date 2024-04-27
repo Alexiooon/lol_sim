@@ -26,6 +26,7 @@ def update_constant_data() -> None:
         with open("./data/" + champ + ".json", "w", encoding="utf8") as _file:
             json.dump(data, _file, indent=2)
 
+
 def get_champion(champ: str) -> None:
     """Get a specific champions data."""
     path = "/".join([BIN_PATH, champ, champ]) + ".bin.json"
@@ -36,9 +37,7 @@ def get_champion(champ: str) -> None:
 
 def main():
     """Execute demo functionality."""
-    # data = requests.get("", timeout=100).json()
-    update_constant_data()
-    get_champion("aatrox")
+    get_champion("kogmaw")
 
 
 if __name__ == "__main__":
