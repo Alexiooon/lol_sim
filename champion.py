@@ -7,31 +7,28 @@ class BaseChampion():
     """Base class of a champion."""
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self) -> None:
+    def __init__(self, level: int = 1) -> None:
         """Init."""
-        # Base stats
-        self.attack_damage = 0.
-        self.magic_resist = 0.
+        # Live stats i.e. the stats which are actively used for calculations.
+        # Note that currenlty the only sources are base stats + levels
         self.ability_power = 0.
+        self.attack_damage = 0.
         self.attack_speed = 0.
-        self.magic_resist = 0.
         self.armor = 0.
-        self.hitpoints = 0.
+        self.magic_resist = 0.
+        self.hp = 0.
+        self.max_hp = self.hp
 
-        # Actual live stats
-        # Currently only track hitpoints. In the future most stats should be
-        # tracked due to various effects.
-        self.current_hitpoints = self.hitpoints
+        # Non-combat related stats
+        self.level = level
 
         # Misc
         self._target = None  # Default target for auto attacks
         self._aa_cooldown = 0  # Seconds until the champion can auto attack again.
 
-        # Load base stats available from cdragon.
-        # TODO: Currently these are not used. I think the currently used attributes for stats
-        # e.g. attack_damage should stay (or be grouped into a live_stats dict) since its affected
-        # by items, levels, etc.
+        # Load stats from cdragon
         self._base_stats = self._load()
+        self.calc_stats()
 
     def __str__(self) -> str:
         """Pretty string representation of champion, typically for printing."""
@@ -46,6 +43,41 @@ class BaseChampion():
         """Load base stats for the champion."""
         return load_base_stats(self.data_str())
 
+    def calc_stats(self):
+        """Calculate live stats from base and level.
+
+        Note that this currently does not support any stats gained from runes or items.
+        Reference: https://leagueoflegends.fandom.com/wiki/Champion_statistic#Increasing_Statistics
+        """
+        self.attack_damage = \
+            self._base_stats["baseDamage"] + \
+            self._base_stats["damagePerLevel"] * (self.level - 1) * \
+            (0.7025 + 0.0175 * (self.level - 1))
+
+        bonus_attack_speed = \
+            self._base_stats["attackSpeedPerLevel"] * (self.level - 1) * \
+            (0.7025 + 0.0175 * (self.level - 1))
+        self.attack_speed = \
+            self._base_stats["attackSpeed"] + \
+            self._base_stats["attackSpeedRatio"] * (bonus_attack_speed / 100)
+
+        self.max_hp = \
+            self._base_stats["baseHP"] + \
+            self._base_stats["hpPerLevel"] * (self.level - 1) * \
+            (0.7025 + 0.0175 * (self.level - 1))
+        self.hp = self.max_hp
+
+        self.armor = \
+            self._base_stats["baseArmor"] + \
+            self._base_stats["armorPerLevel"] * (self.level - 1) * \
+            (0.7025 + 0.0175 * (self.level - 1))
+
+        self.magic_resist = \
+            self._base_stats["baseSpellBlock"] + \
+            self._base_stats["spellBlockPerLevel"] * (self.level - 1) * \
+            (0.7025 + 0.0175 * (self.level - 1))
+
+    # ========== Combat ==========
     def set_target(self, target: str):
         """Select a champion to autoattack."""
         self._target = target
@@ -82,30 +114,20 @@ class BaseChampion():
 
     def _auto_attack_hit(self, damage: float) -> None:
         """Take damage from an auto attack."""
-        self.current_hitpoints -= damage * self._physical_damage_reduction()
-        print(f"{self} takes {damage:.0f} damage. New hitpoints: {self.current_hitpoints:.0f}")
+        self.max_hp -= damage * self._physical_damage_reduction()
+        print(f"{self} takes {damage:.0f} damage. New hitpoints: {self.max_hp:.0f}")
 
     def is_alive(self) -> bool:
         """Check whether the champion is alive i.e. hitpoints is above (or equal) to zero."""
-        return self.current_hitpoints >= 0
+        return self.max_hp >= 0
 
 
 class KogMaw(BaseChampion):
     """Kog'Maw."""
 
-    def __init__(self) -> None:
+    def __init__(self, level: int = 1) -> None:
         """Init."""
-        super().__init__()
-
-        # Set the champions base stats
-        # TODO: Instead of hardcoding them here, load bin file from cdragon.
-        self.ability_power = 0
-        self.attack_damage = 61
-        self.magic_resist = 30
-        self.attack_speed = 0.665
-        self.armor = 24
-        self.hitpoints = 635
-        self.current_hitpoints = self.hitpoints
+        super().__init__(level=level)
 
     def __str__(self) -> str:
         """Pretty string representation of champion."""
@@ -120,20 +142,9 @@ class KogMaw(BaseChampion):
 class Sivir(BaseChampion):
     """Sivir."""
 
-    def __init__(self) -> None:
+    def __init__(self, level: int = 1) -> None:
         """Init."""
-        super().__init__()
-
-        # Set the champions base stats
-        # TODO: Instead of hard coding them here, load bin file from cdragon.
-        self.ability_power = 0
-        self.attack_damage = 58
-        self.magic_resist = 30
-        self.attack_speed = 0.625
-        self.magic_resist = 30
-        self.armor = 26
-        self.hitpoints = 600
-        self.current_hitpoints = self.hitpoints
+        super().__init__(level=level)
 
     def __str__(self) -> str:
         """Pretty string representation of champion."""

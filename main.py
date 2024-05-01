@@ -19,8 +19,18 @@ def run_auto_attack_simulation():
 def main():
     """Execute demo functionality."""
     # Create champion instances
-    sivir = champion.Sivir()
-    kog = champion.KogMaw()
+    sivir = champion.Sivir(level=1)
+    kog = champion.KogMaw(level=1)
+
+    # Print some base stats
+    for champ in (sivir, kog):
+        print(f"\n===== {champ} =====")
+        print(f"Level: {champ.level}")
+        print(f"HP: {champ.hp}")
+        print(f"Armor: {champ.armor}")
+        print(f"MR: {champ.magic_resist}")
+        print(f"AD: {champ.attack_damage}")
+        print(f"AS: {champ.attack_speed}")
 
     # Set their targets as each other
     sivir.set_target(str(kog))
