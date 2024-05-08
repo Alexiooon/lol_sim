@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Base file for some testing."""
 
-import champion
+import champions
 from event import EventQueue
 
 
@@ -19,8 +19,8 @@ def run_auto_attack_simulation():
 def main():
     """Execute demo functionality."""
     # Create champion instances
-    sivir = champion.Sivir(level=1)
-    kog = champion.KogMaw(level=1)
+    sivir = champions.Sivir(level=1)
+    kog = champions.KogMaw(level=1)
 
     # Print some base stats
     for champ in (sivir, kog):

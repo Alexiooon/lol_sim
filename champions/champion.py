@@ -120,37 +120,3 @@ class BaseChampion():
     def is_alive(self) -> bool:
         """Check whether the champion is alive i.e. hitpoints is above (or equal) to zero."""
         return self.max_hp >= 0
-
-
-class KogMaw(BaseChampion):
-    """Kog'Maw."""
-
-    def __init__(self, level: int = 1) -> None:
-        """Init."""
-        super().__init__(level=level)
-
-    def __str__(self) -> str:
-        """Pretty string representation of champion."""
-        return "Kog'Maw"
-
-    @staticmethod
-    def data_str() -> str:
-        """Data string representation of champion, typically in file names or accessing data."""
-        return "kogmaw"
-
-
-class Sivir(BaseChampion):
-    """Sivir."""
-
-    def __init__(self, level: int = 1) -> None:
-        """Init."""
-        super().__init__(level=level)
-
-    def __str__(self) -> str:
-        """Pretty string representation of champion."""
-        return "Sivir"
-
-    @staticmethod
-    def data_str() -> str:
-        """Data string representation of champion, typically in file names or accessing data."""
-        return "sivir"

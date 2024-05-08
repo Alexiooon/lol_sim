@@ -1,5 +1,5 @@
 """Module defining the event loop and valid events."""
-from champion import BaseChampion
+from champions.champion import BaseChampion
 
 # Dictionary of commands as keys and a prettier, human readable format as values
 PRINTABLE = {
