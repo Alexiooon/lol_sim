@@ -1,6 +1,6 @@
 """Class defining Sivir as a champion."""
 
-from .champion import BaseChampion
+from ._champion import BaseChampion
 
 
 class Sivir(BaseChampion):

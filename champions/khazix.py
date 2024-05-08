@@ -1,10 +1,10 @@
-"""Class defining Sivir as a champion."""
+"""Class defining Kha'Zix as a champion."""
 
 from ._champion import BaseChampion
 
 
-class KogMaw(BaseChampion):
-    """Kog'Maw."""
+class KhaZix(BaseChampion):
+    """Kha'Zix."""
 
     def __init__(self, level: int = 1) -> None:
         """Init."""
@@ -12,9 +12,9 @@ class KogMaw(BaseChampion):
 
     def __str__(self) -> str:
         """Pretty string representation of champion."""
-        return "Kog'Maw"
+        return "Kha'Zix"
 
     @staticmethod
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
-        return "kogmaw"
+        return "khazix"
