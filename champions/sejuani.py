@@ -18,3 +18,8 @@ class Sejuani(BaseChampion):
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
         return "sejuani"
+
+    @staticmethod
+    def printable() -> str:
+        """Pretty string representation of champion, typically for menus or as display name."""
+        return "Sejuani"

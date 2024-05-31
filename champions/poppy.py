@@ -18,3 +18,8 @@ class Poppy(BaseChampion):
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
         return "poppy"
+
+    @staticmethod
+    def printable() -> str:
+        """Pretty string representation of champion, typically for menus or as display name."""
+        return "Poppy"

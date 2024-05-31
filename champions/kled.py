@@ -18,3 +18,8 @@ class Kled(BaseChampion):
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
         return "kled"
+
+    @staticmethod
+    def printable() -> str:
+        """Pretty string representation of champion, typically for menus or as display name."""
+        return "Kled"

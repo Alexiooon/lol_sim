@@ -39,6 +39,11 @@ class BaseChampion():
         """Data string representation of champion, typically in file names or accessing data."""
         raise NotImplementedError("This should be defined in child class.")
 
+    @staticmethod
+    def printable() -> str:
+        """Pretty string representation of champion, typically for menus or as display name."""
+        raise NotImplementedError("This should be defined in child class.")
+
     def _load(self):
         """Load base stats for the champion."""
         return load_base_stats(self.data_str())

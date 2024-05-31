@@ -18,3 +18,8 @@ class VelKoz(BaseChampion):
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
         return "velkoz"
+
+    @staticmethod
+    def printable() -> str:
+        """Pretty string representation of champion, typically for menus or as display name."""
+        return "Vel'Koz"

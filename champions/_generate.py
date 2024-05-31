@@ -1,4 +1,4 @@
-"""Small script for generating champion files."""
+"""Small scripts for generating champion files."""
 
 import os
 
@@ -173,7 +173,7 @@ champions = [
 ]
 
 
-def main():
+def create_files():
     """Create a bunch of basic champion files."""
     files_created = 0
     file_length = 21  # A hard-coded value that surely won't haunt me in the future
@@ -203,5 +203,22 @@ def main():
     print(f"Created {files_created} new files.")
 
 
+def append_method():
+    """Append static pretty string method."""
+    for champ in champions:
+        class_name = champ.replace("'", "").replace(" ", "").replace(".", "")
+        filename = class_name.lower()
+        with open(filename + ".py", "a", encoding="utf8") as _file:
+            _file.writelines([
+                '\n',
+                '    @staticmethod\n',
+                '    def printable() -> str:\n',
+                '        """Pretty string representation of champion, '
+                'typically for menus or as display name."""\n',
+                f'        return "{champ}"\n'
+            ])
+
+
 if __name__ == "__main__":
-    main()
+    create_files()
+    append_method()
