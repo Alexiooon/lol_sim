@@ -1,7 +1,6 @@
 """Module for managing champion bin.json files."""
 
 import json
-import logging
 import os
 
 # Main directory containing bin data
@@ -28,7 +27,7 @@ BASE_STATS = [
     "spellBlockPerLevel",
 
     # Attack speed
-    "attackSpeed",  # TODO: Handle (and write down) how the calculates
+    "attackSpeed",
     "attackSpeedRatio",
     "attackSpeedPerLevel",
 

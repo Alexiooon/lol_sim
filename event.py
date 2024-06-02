@@ -106,7 +106,5 @@ class EQSingleton():
         """Delegate access to implementation."""
         return setattr(self.__instance, attr, value)
 
-# Initialize the event queue as the
-
 
 EventQueue = EQSingleton()
