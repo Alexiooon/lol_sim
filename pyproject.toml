@@ -1,0 +1,29 @@
+[tool.ruff]
+line-length = 100  # Configure Ruff to use this line length when formatting documents
+fixable = [  # Categories or rules to be considered for autofix (if possible) by VSCode/Ruff
+    "D",
+    "PLR0402",  # Manual "from import"
+    "PLR1711",  # Useless return statement
+    "PLR2044",  # Empty comment
+    "E",
+    "W"
+]
+
+
+[tool.ruff.lint]
+# Rules are handpicked from https://docs.astral.sh/ruff/rules/
+select = [
+    "D",    # Pydocstyle
+    "E",    # Pycodestyle errors
+    "F",    # Pyflakes
+    "I",    # Isort
+    "N",    # PEP-8 Naming
+    "RUF",  # Ruff specific rules
+    "PL",   # Pylint
+    "W"     # Pycodestyle warnings
+]
+preview = true  # Enable rules which are only available as preview.
+fixable = ["I001"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
