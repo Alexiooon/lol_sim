@@ -345,3 +345,8 @@ CHAMPIONS: list[BaseChampion] = [
 CHAMPION_DATA_STR = [
     champ.data_str() for champ in CHAMPIONS
 ]
+
+# Pretty string representation of champion, typically for printing the name.
+CHAMPION_PRINTABLE = [
+    champ.printable() for champ in CHAMPIONS
+]
