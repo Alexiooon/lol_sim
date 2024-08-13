@@ -4,18 +4,22 @@ import logging
 import os
 import sys
 
-from PySide6.QtCore import QSize
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QSize, Signal, Slot
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
+    QFrame,
     QGridLayout,
     QHBoxLayout,
+    QLabel,
     QMainWindow,
     QPushButton,
     QScrollArea,
     QStatusBar,
     QWidget,
 )
+
+ICON_FOLDER = os.path.join(os.path.dirname(__file__), "icon")
 
 
 class MainWindow(QMainWindow):
@@ -25,7 +29,7 @@ class MainWindow(QMainWindow):
         """Init."""
         super().__init__()
         self.app = app
-        self.setWindowTitle('Scouting Tool')
+        self.setWindowTitle('DPS Calculation Tool')
 
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu('&File')
@@ -45,56 +49,54 @@ class MainWindow(QMainWindow):
 class MainDisplay(QWidget):
     """Example widget."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Init."""
         super().__init__()
-        button1 = QPushButton('Button1')
-        button2 = ChampionButton('Aatrox')
-
-        button1.clicked.connect(self.click_button)
-        button2.clicked.connect(self.click_button)
-
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(button1)
-        button_layout.addWidget(button2)
-        # self.setLayout(button_layout)
-
         main_layout = QHBoxLayout()
         self.setLayout(main_layout)
 
-        # self.setLayout(ChampionButtonMenu())
+        # Create the champion list
         scrollable = QScrollArea()
-        champion_widget = ChampionButtonMenuWidget()
-        champion_widget.setLayout(ChampionButtonLayout())
+        champion_widget = ChampionButtonMenuWidget(self)
         scrollable.setWidget(champion_widget)
         scrollable.setFixedWidth((60 + 7) * 10 + 20)
-        main_layout.addChildWidget(scrollable)
 
-    def click_button(self):
-        """Click the button."""
-        print(f'Hehe, {self}')
+        # Create the champion display
+        self.champion_info = ChampionInfoWidget()
+
+        main_layout.addWidget(scrollable)
+        main_layout.addWidget(self.champion_info)
+
+    @Slot(str, name="LoadChampion")
+    def champion_button_press(self, champ: str):
+        """Load stats for a champion."""
+        logging.debug("Recieve signal '%s'", champ)
+        self.champion_info.set_champ(champ)
 
 
 class ChampionButtonMenuWidget(QWidget):
     """Widget containing buttons for all champions with icons."""
 
-    def __init__(self):
+    def __init__(self, parent: MainDisplay) -> None:
         """Init."""
         super().__init__()
+        self.setLayout(ChampionButtonLayout(parent))
         self.setFixedWidth((60 + 7) * 10)  # 10 champs per row, and a little margin in between
 
 
 class ChampionButtonLayout(QGridLayout):
     """Grid with all champions as buttons."""
 
-    def __init__(self):
+    def __init__(self, parent: MainDisplay) -> None:
         """Init."""
         super().__init__()
         n_cols = 10
-        for i, champ in enumerate(os.listdir("icon")):
+        for i, champ in enumerate(os.listdir(ICON_FOLDER)):
             col = i % n_cols
             row = (i - col) / 10
-            self.addWidget(ChampionButton(champ[:-4]), row, col)
+            button = ChampionButton(champ[:-4])
+            button.click_signal.connect(parent.champion_button_press)
+            self.addWidget(button, row, col)
 
 
 class ChampionButton(QPushButton):
@@ -102,6 +104,7 @@ class ChampionButton(QPushButton):
 
     icon_width = 60
     icon_height = 60
+    click_signal = Signal(str, name="LoadChampion")
 
     def __init__(self, champ: str):
         """Init."""
@@ -110,7 +113,7 @@ class ChampionButton(QPushButton):
         self.clicked.connect(self.handle_button)
 
         # Set the image
-        icon_path = os.path.join("icon", champ + ".png")
+        icon_path = os.path.join(ICON_FOLDER, champ + ".png")
         if os.path.exists(icon_path):
             self.setIcon(QIcon(icon_path))
             self.setIconSize(QSize(self.icon_width, self.icon_height))
@@ -120,19 +123,48 @@ class ChampionButton(QPushButton):
 
     def handle_button(self):
         """Print the name of the champion."""
-        print(self.champ)
+        logging.debug("Emit signal '%s'", self.champ)
+        self.click_signal.emit(self.champ)
+
+
+class ChampionInfoWidget(QFrame):
+    """Sidebar containing info regarding a champion."""
+
+    def __init__(self) -> None:
+        """Init."""
+        super().__init__()
+        self.setFixedSize(250, 400)
+        self.setFrameStyle(QFrame.StyledPanel)
+        self.setLineWidth(1)
+        self._layout = QGridLayout()
+        self.setLayout(self._layout)
+
+    def set_champ(self, champ: str):
+        """Set the champion to display."""
+        icon_path = os.path.join(ICON_FOLDER, champ + ".png")
+        label = QLabel()
+        if os.path.exists(icon_path):
+            pixmap = QPixmap(icon_path)
+            pixmap = pixmap.scaled(60, 60)
+            label.setPixmap(pixmap)
+        self._layout.addWidget(label, 0, 0)
+
+
+class ChampionCard():
+    """Info regarding a champion."""
+
+    def __init__(self) -> None:
+        """Init."""
+        self._champ: str | None = None
 
 
 def main():
     """Run main functionality."""
     app = QApplication(sys.argv)
-
-    # window = QMainWindow()
     window = MainWindow(app)
     window.setWindowTitle('LoL DPS Calc')
-    # window = QWidget()
 
-    # Slider
+    # Unused Slider example
     # slider = QSlider(Qt.Horizontal)
     # slider.setMinimum(1)
     # slider.setMaximum(100)
@@ -140,7 +172,6 @@ def main():
     # slider.show()
 
     # Window
-    # window.setCentralWidget(button)
     window.show()
     app.exec()
 

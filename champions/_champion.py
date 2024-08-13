@@ -20,7 +20,7 @@ class BaseChampion():
         self.max_hp = self.hp
 
         # Non-combat related stats
-        self.level = level
+        self._level = level
 
         # Misc
         self._target = None  # Default target for auto attacks
@@ -43,6 +43,17 @@ class BaseChampion():
     def printable() -> str:
         """Pretty string representation of champion, typically for menus or as display name."""
         raise NotImplementedError("This should be defined in child class.")
+
+    @property
+    def level(self):
+        """Level of the champion."""
+        return self._level
+
+    @level.setter
+    def level(self, new_level: int):
+        """Update champion stats when level changes."""
+        self._level = new_level
+        self.calc_stats()
 
     def _load(self):
         """Load base stats for the champion."""
