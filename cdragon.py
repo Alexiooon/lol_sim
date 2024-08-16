@@ -1,8 +1,12 @@
 """Common functions for getting data from Community Dragon (CD)."""
 
 import json
+import logging
+import os
 
 import requests
+
+from champions import CHAMPION_DATA_STR
 
 BASE_PATH = ("https://raw.communitydragon.org/"
              "latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/")
@@ -30,14 +34,27 @@ def update_constant_data() -> None:
 def get_champion(champ: str) -> None:
     """Get a specific champions data."""
     path = "/".join([BIN_PATH, champ, champ]) + ".bin.json"
-    data = requests.get(path, timeout=100).json()
+    res = requests.get(path, timeout=100).json()
+    if res is None:
+        logging.warning("Failed to load champion data from %s", path)
+    data = res.json()
     with open("./data_bin/" + champ + ".json", "w", encoding="utf8") as _file:
         json.dump(data, _file, indent=2)
 
 
+def get_all_champions() -> None:
+    """Download all champion bin.json data files from CommunityDragon."""
+    local_path = os.path.join(os.path.dirname(__file__), "data_bin")
+    for champ in CHAMPION_DATA_STR:
+        if os.path.exists(os.path.join(local_path, champ + ".json")):
+            logging.debug("Data for champion '%s' already exists, skip")
+            continue
+        get_champion(champ)
+
+
 def main():
     """Execute demo functionality."""
-    get_champion("kogmaw")
+    get_all_champions()
 
 
 if __name__ == "__main__":

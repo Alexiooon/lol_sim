@@ -17,7 +17,7 @@ class RenataGlasc(BaseChampion):
     @staticmethod
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
-        return "renataglasc"
+        return "renata"
 
     @staticmethod
     def printable() -> str:

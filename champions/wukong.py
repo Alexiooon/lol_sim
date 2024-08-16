@@ -17,7 +17,7 @@ class Wukong(BaseChampion):
     @staticmethod
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
-        return "wukong"
+        return "monkeyking"
 
     @staticmethod
     def printable() -> str:
