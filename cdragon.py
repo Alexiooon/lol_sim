@@ -11,6 +11,8 @@ from champions import CHAMPION_DATA_STR
 BASE_PATH = ("https://raw.communitydragon.org/"
              "latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/")
 BIN_PATH = "https://raw.communitydragon.org/latest/game/data/characters"
+STATUS_OK = 200
+
 CHAMPION_TO_ID = {  # Champion IDs in Community Dragon
     "Ahri": "103",
     "Annie": "1",
@@ -34,8 +36,8 @@ def update_constant_data() -> None:
 def get_champion(champ: str) -> None:
     """Get a specific champions data."""
     path = "/".join([BIN_PATH, champ, champ]) + ".bin.json"
-    res = requests.get(path, timeout=100).json()
-    if res is None:
+    res = requests.get(path, timeout=100)
+    if res.status_code != STATUS_OK:
         logging.warning("Failed to load champion data from %s", path)
     data = res.json()
     with open("./data_bin/" + champ + ".json", "w", encoding="utf8") as _file:

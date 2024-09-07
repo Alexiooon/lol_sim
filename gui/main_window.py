@@ -4,7 +4,9 @@ import logging
 import os
 import sys
 
-from PySide6.QtCore import QSize, Signal, Slot
+from PySide6.QtCore import QSize, Qt, Signal, Slot
+
+# from Pyside6.QtCore.Qt import QHorizontal
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
@@ -15,9 +17,12 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QScrollArea,
+    QSlider,
     QStatusBar,
     QWidget,
 )
+
+import champions
 
 ICON_FOLDER = os.path.join(os.path.dirname(__file__), "icon")
 
@@ -139,23 +144,53 @@ class ChampionInfoWidget(QFrame):
         self._layout = QGridLayout()
         self.setLayout(self._layout)
 
+        # Champion definition
+        self.champ: None | champions.BaseChampion = None
+        self.champ_icon = QLabel()
+        self.champ_title = QLabel()
+
+        # Level slider
+        self.level_slider = QSlider(Qt.Horizontal)
+        self.level_slider.setMinimum(1)
+        self.level_slider.setMaximum(18)
+        self.level_slider.valueChanged.connect(self.update)        
+
+        # Champion stats
+        self.champ_stats = {
+            "attack_damage": QLabel(),
+            "attack_speed": QLabel(),
+            "max_hp": QLabel(),
+            "armor": QLabel(),
+            "magic_resist": QLabel()
+        }
+        stat_row = 2  # Start row for champion stats
+        for stat, val in self.champ_stats.items():
+            stat_name_label = QLabel()
+            stat_name_label.setText(stat)
+            self._layout.addWidget(stat_name_label, stat_row, 0)
+            self._layout.addWidget(val, stat_row, 1)
+            stat_row += 1
+
+        self._layout.addWidget(self.champ_icon, 0, 0)
+        self._layout.addWidget(self.champ_title, 0, 1)
+        self._layout.addWidget(self.level_slider, 1, 0, 1, 2)
+
     def set_champ(self, champ: str):
         """Set the champion to display."""
         icon_path = os.path.join(ICON_FOLDER, champ + ".png")
-        label = QLabel()
         if os.path.exists(icon_path):
             pixmap = QPixmap(icon_path)
             pixmap = pixmap.scaled(60, 60)
-            label.setPixmap(pixmap)
-        self._layout.addWidget(label, 0, 0)
+            self.champ_icon.setPixmap(pixmap)
+        self.champ = getattr(champions, champ)()
+        self.champ_title.setText(champ)
+        self._layout.update()
 
-
-class ChampionCard():
-    """Info regarding a champion."""
-
-    def __init__(self) -> None:
-        """Init."""
-        self._champ: str | None = None
+    def update(self):
+        """Update champion info."""
+        self.champ.level = self.level_slider.value()
+        for stat, val in self.champ_stats.items():
+            val.setText(str(getattr(self.champ, stat)))
 
 
 def main():
