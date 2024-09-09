@@ -153,7 +153,7 @@ class ChampionInfoWidget(QFrame):
         self.level_slider = QSlider(Qt.Horizontal)
         self.level_slider.setMinimum(1)
         self.level_slider.setMaximum(18)
-        self.level_slider.valueChanged.connect(self.update)        
+        self.level_slider.valueChanged.connect(self.update)
 
         # Champion stats
         self.champ_stats = {
