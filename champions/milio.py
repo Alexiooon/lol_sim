@@ -6,20 +6,25 @@ from ._champion import BaseChampion
 class Milio(BaseChampion):
     """Milio."""
 
+    _str_cdragon = "milio"    # Name under DataDragon
+    _str_ddragon = "milio"    # Name under CommunityDragon
+    _str_data = "milio"       # Internal data name
+    _str_printable = "Milio"  # Name in pretty "printable" format
+
     def __init__(self, level: int = 1) -> None:
         """Init."""
         super().__init__(level=level)
 
     def __str__(self) -> str:
         """Pretty string representation of champion."""
-        return "Milio"
+        return self.printable()
 
     @staticmethod
     def data_str() -> str:
         """Data string representation of champion, typically in file names or accessing data."""
-        return "milio"
+        return Milio._str_data
 
     @staticmethod
     def printable() -> str:
         """Pretty string representation of champion, typically for menus or as display name."""
-        return "Milio"
+        return Milio._str_printable

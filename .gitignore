@@ -1,3 +1,4 @@
 .apikey
 **/__pycache__
 gui/icon/**
+data_bin/**

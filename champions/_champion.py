@@ -7,6 +7,11 @@ class BaseChampion():
     """Base class of a champion."""
     # pylint: disable=too-many-instance-attributes
 
+    _str_cdragon = ""   # Name under DataDragon
+    _str_ddragon = ""   # Name under CommunityDragon
+    str_data = ""       # Internal data name
+    str_printable = ""  # Name in pretty "printable" format
+
     def __init__(self, level: int = 1) -> None:
         """Init."""
         # Live stats i.e. the stats which are actively used for calculations.

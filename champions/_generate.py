@@ -219,6 +219,43 @@ def append_method():
             ])
 
 
+def create_str_attributes():
+    """Create various string attributes for each champion."""
+    for champ in champions:
+        class_name = champ.replace("'", "").replace(" ", "").replace(".", "")
+        filename = class_name.lower()
+        with open(filename + ".py", "r", encoding="utf8") as _file:
+            contents = _file.readlines()
+
+        # Seach for _str_cdragon as an identifier
+        is_updated = False
+        for line in contents:
+            if "_str_cdragon = " in line:
+                is_updated = True
+                break
+        if not is_updated:
+            print(f"Updating {champ}")
+            contents.insert(
+                8,
+                f'    _str_printable = "{champ}"  # Name in pretty "printable" format\n\n')
+            contents.insert(8, f'    _str_data = "{filename}"       # Internal data name\n')
+            contents.insert(8, f'    _str_ddragon = "{filename}"    # Name under CommunityDragon\n')
+            contents.insert(8, f'    _str_cdragon = "{filename}"    # Name under DataDragon\n')
+
+            contents[18] = "        return self.printable()\n"
+            contents[23] = f"        return {class_name}._str_data\n"
+            contents[28] = f"        return {class_name}._str_printable\n"
+
+        else:
+            print(f"Found string for {champ}")
+
+        # Rewrite the file
+        with open(filename + ".py", "w", encoding="utf8") as _file:
+            contents = "".join(contents)
+            _file.write(contents)
+
+
 if __name__ == "__main__":
-    create_files()
-    append_method()
+    # create_files()
+    # append_method()
+    create_str_attributes()
