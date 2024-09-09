@@ -1,6 +1,9 @@
 """Define the different champions in the game and their stats."""
 
-from bin import load_base_stats
+import json
+import os
+
+from ._data import AR_STATS, BASE_STATS, DATA_DIR
 
 
 class BaseChampion():
@@ -9,8 +12,8 @@ class BaseChampion():
 
     _str_cdragon = ""   # Name under DataDragon
     _str_ddragon = ""   # Name under CommunityDragon
-    str_data = ""       # Internal data name
-    str_printable = ""  # Name in pretty "printable" format
+    _str_data = ""       # Internal data name
+    _str_printable = ""  # Name in pretty "printable" format
 
     def __init__(self, level: int = 1) -> None:
         """Init."""
@@ -62,7 +65,24 @@ class BaseChampion():
 
     def _load(self):
         """Load base stats for the champion."""
-        return load_base_stats(self.data_str())
+        # Load data if available under data_bin folder
+        base_stat_key = "Characters/" + self.__class__.__name__ + "/CharacterRecords/Root"
+        bin_file = os.path.join(DATA_DIR, self._str_data + ".json")
+        try:
+            with open(bin_file, "r", encoding="utf8") as _file:
+                data = dict(json.load(_file))[base_stat_key]
+        except FileNotFoundError as exc:
+            raise FileNotFoundError(f"File not found: {bin_file}") from exc
+
+        # Extract the relevant data
+        base_stats = {key: round(data[key], 3) for key in BASE_STATS}
+        for key in AR_STATS:  # Ability resource handled separately
+            try:  # Not sure how ability resource is handled for every champ, keep like this for now
+                base_stats[key] = round(data[key, 3])
+            except KeyError:
+                pass
+
+        return base_stats
 
     def calc_stats(self):
         """Calculate live stats from base and level.
