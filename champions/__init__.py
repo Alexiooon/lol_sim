@@ -8,7 +8,7 @@ generic files. Instead, the __all__ list at the bottom defines what is actually
 public, and will be imported when using *.
 """
 from ._champion import BaseChampion  # noqa: I001 (unsorted import)
-from ._common import CHAMPIONS, CHAMPION_DATA_STR, get_champion
+from ._common import CHAMPIONS, CHAMPION_DATA_STR
 
 # Import all champions
 from .aatrox import Aatrox
@@ -352,6 +352,4 @@ __all__ = [
     "Zilean",
     "Zoe",
     "Zyra",
-
-    "get_champion",
 ]
