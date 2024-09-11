@@ -13,6 +13,7 @@ from .annie import Annie
 from .aphelios import Aphelios
 from .ashe import Ashe
 from .aurelionsol import AurelionSol
+from .aurora import Aurora
 from .azir import Azir
 from .bard import Bard
 from .belveth import BelVeth
@@ -183,6 +184,7 @@ CHAMPIONS: list[BaseChampion] = [
     Aphelios,
     Ashe,
     AurelionSol,
+    Aurora,
     Azir,
     Bard,
     BelVeth,
