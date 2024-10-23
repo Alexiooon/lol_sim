@@ -8,14 +8,14 @@ from PySide6.QtWidgets import QApplication
 from gui.main_window import MainWindow
 
 
-def main():
+def run():
     """Execute demo functionality."""
     app = QApplication(sys.argv)
     window = MainWindow(app)
-    window.setWindowTitle('LoL DPS Calc')
+    window.setWindowTitle("LoL DPS Calc")
     window.show()
     app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    run()

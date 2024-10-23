@@ -347,3 +347,8 @@ CHAMPIONS: list[BaseChampion] = [
 CHAMPION_DATA_STR = [
     champ.data_str() for champ in CHAMPIONS
 ]
+
+
+def is_champion(champion: str) -> bool:
+    """Check if a string corresponds to a champion."""
+    return champion in CHAMPION_DATA_STR or champion in (str(champ) for champ in CHAMPIONS)

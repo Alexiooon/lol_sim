@@ -1,46 +1,37 @@
 #!/usr/bin/env python3
-"""Base file for some testing."""
+"""Main entry point for the League of Legends simulator."""
 
-import champions
-from event import EventQueue
+import argparse
+
+import cli_main
+import demo
+import gui_main
 
 
-def run_auto_attack_simulation():
-    """Run a simulation of autoattacks until one person loses."""
-    for _ in range(15):
-        for champ in EventQueue.champions:
-            event, delay = champ.get_next_attack()
-            last_timestamp = EventQueue.get_last_timestamp(str(champ))
-            EventQueue.add_event(event, last_timestamp + delay)
-    EventQueue.print_queue()
-    EventQueue.run()
+def get_args() -> argparse.Namespace:
+    """Get command line arguments."""
+    args = argparse.ArgumentParser(description="Run the League of Legends simulator.")
+    args.add_argument(
+        "mode", type=str, choices=["cli", "gui", "demo"], default="gui",
+        help="The mode to run the simulator in."
+    )
+
+    return args.parse_args()
 
 
 def main():
-    """Execute demo functionality."""
-    # Create champion instances
-    sivir = champions.Sivir(level=1)
-    kog = champions.KogMaw(level=1)
+    """Execute main functionality."""
+    args = get_args()
 
-    # Print some base stats
-    for champ in (sivir, kog):
-        print(f"\n===== {champ} =====")
-        print(f"Level: {champ.level}")
-        print(f"HP: {champ.hp}")
-        print(f"Armor: {champ.armor}")
-        print(f"MR: {champ.magic_resist}")
-        print(f"AD: {champ.attack_damage}")
-        print(f"AS: {champ.attack_speed}")
+    if args.mode == "cli":
+        cli_main.run()
 
-    # Set their targets as each other
-    sivir.set_target(str(kog))
-    kog.set_target(str(sivir))
+    elif args.mode == "gui":
+        gui_main.run()
 
-    # Add to event queue
-    EventQueue.add_champion(sivir)
-    EventQueue.add_champion(kog)
-
-    run_auto_attack_simulation()
+    elif args.mode == "demo":
+        print("Running demo.")
+        demo.demo()
 
 
 if __name__ == "__main__":

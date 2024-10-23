@@ -1,5 +1,5 @@
 """Module defining the event loop and valid events."""
-from champions._champion import BaseChampion
+from champions import BaseChampion, is_champion
 
 # Dictionary of commands as keys and a prettier, human readable format as values
 PRINTABLE = {
@@ -25,6 +25,9 @@ class EQSingleton():
 
         def add_champion(self, champion: BaseChampion) -> None:
             """Add a champion to the event queue."""
+            if isinstance(champion, str) and not is_champion(champion):
+                raise TypeError(f"{champion} is not a valid champion.")
+
             # Make sure the champion isn't already added.
             existing_champions = [str(champ) for champ in self.champions]
             if str(champion) in existing_champions:
